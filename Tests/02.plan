@@ -1,5 +1,5 @@
-R(V[0,,m*X]) => R[0,,m*X]{
+Reverse(V0[:m*X]) => R0[:m*X]{
   W1(m) => i {
-    V[0,i,X] => R[0,m-1-i,X]
+    V0[i:X] => R0[m-1-i:X]
   }
 }

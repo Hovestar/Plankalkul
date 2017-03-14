@@ -1,5 +1,0 @@
-START ::= Function
-Function ::= Decl '{' {Statement} '}'
-Decl ::= var '=>' ( var | '(' var {',' var}')')
-Statement ::= (Loop | '{' {Statement}'}' | Assignment) NEWLINE
-Assignment ::=
