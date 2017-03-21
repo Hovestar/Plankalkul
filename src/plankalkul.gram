@@ -1,17 +1,19 @@
 START ::= Function
 Function ::= Decl '{' {Statement} '}'
 Decl ::= Name varStatement '=>' (var | varStatement)
-Name ::= ALPHANUM
+Name ::= ALPHANUMS
 varStatement ::= '(' var {',' var} ')'
-Statement ::= (Loop | '{' {Statement}'}' | Assignment) NEWLINE
-Assignment ::= arith => var
+Statement ::= (if | Loop | '{' {Statement}'}' | Assignment) NEWLINE
+if ::= valstate '->' statement
+Assignment ::= valState '=>' var
 Loop ::= loopname Statement
-loopname ::= 'W' | 'W1' '(' var ')' '=>' var
-var ::= ('R'|'V'|'Z') NUM indexType {indexType} | indexvar
+loopname ::= 'W' | 'W1' '(' arith ')' '=>' var
+var ::= ('R'|'V'|'Z') NUMS indexType {indexType} | indexvar
 indexType ::= '[' [arith] ':' type ']'
 indexvar ::= LOWERCHAR {LOWERCHAR}
 type ::= {indexvar '*'} ('i'|'b'|'f'|'c'|'X'[NUM])
-value ::= NUM | var | '(' arith ')'
+value ::= NUM | var | '\t'| '\f' | '(' valstate ')'
+valstate ::= (arith [('<'|'>'|'=') arith] | '!' valState)
 arith ::= arithp
 arithp ::= aritht {('+'|'-') aritht}
 aritht ::= value {('*'|'/') value}
