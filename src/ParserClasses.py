@@ -8,14 +8,15 @@ class Memory:
     def __getitem__(self,key):
         val = self.vals[key.name]
         inds = key.indexes
-        # Indexing(None,PlanType([],i))
-        if len(inds)==1 and inds[0].loc == None:
+        # Var(Z0,Indexing(None,PlanType(['m'],X)))
+        # loc,indexType
+        if inds.loc == None:
             return val
         raise NotImplelentedError("This")
-
-
     def __setitem__(self,key,value):
         self.vals[key.name] = value
+    def __str__(self):
+        return str(self.vals)
 
 class Function:
     def __init__(self,name,inputs,outputs,body):
@@ -46,7 +47,7 @@ class Var:
         self.name = name
         self.indexes = indexes
     def __str__(self):
-        return 'Var('+str(self.name)+','+','.join(map(str,self.indexes))+')'
+        return 'Var('+str(self.name)+','+str(self.indexes)+')'
     def __call__(self,mem):
         return mem,mem[self]
     def __hash__(self):
@@ -127,6 +128,7 @@ class ForLoop:
         if isinstance(arr,int):
             arr = range(arr)
         for i in arr:
+            print(mem)
             mem[self.indVar] = i
             mem,val = statement(mem)
         return mem, val

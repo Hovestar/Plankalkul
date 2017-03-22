@@ -4,7 +4,6 @@ import ParserClasses as pClass
 class ParseError(Exception):
     pass
 
-
 def pullConst(s,value):
     s = s.lstrip()
     if s[:len(value)] != value:
@@ -72,7 +71,7 @@ def parseVar(s):
     s = s[1:]
     num, s = parseNUM(s)
     name += num
-    tmp,s = parseIndexType(s)
+    ind,s = parseIndexType(s)
     def helper(exps,s):
         s = s.lstrip()
         if s == "":
@@ -81,9 +80,9 @@ def parseVar(s):
             val,s = parseIndexType(s)
         except ParseError:
             return exps,s
-        return helper(exps+[val],s)
-    end,s = helper([tmp],s)
-    return pClass.Var(name,end), s # end is a list of indexes called on name.
+        return helper(pClass(exps,val),s)
+    tmp = pClass.Var(name,ind)
+    return helper(tmp,s)
 def parseNUM(s):
     """
     NUMS
@@ -324,4 +323,7 @@ if __name__ == "__main__":
     with open(fname,'r') as f:
         body = f.read()
     func,s = parseFunction(body)
-    print(func(pClass.Memory(),int(sys.argv[2])))
+    print(func)
+    mem, val = func(pClass.Memory(),15)
+    print(mem)
+    print(val)
