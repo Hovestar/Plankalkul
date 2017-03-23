@@ -6,15 +6,23 @@ class Memory:
     def __init__(self):
         self.vals = {}
     def __getitem__(self,key):
+        if isinstance(key,str):
+            return self.vals[key]
         val = self.vals[key.name]
-        inds = key.indexes
-        # Var(Z0,Indexing(None,PlanType(['m'],X)))
-        # loc,indexType
-        if inds.loc == None:
+        _,ind = key.indexes(self)
+        if ind == None:
             return val
-        raise NotImplelentedError("This")
+        return val[ind]
     def __setitem__(self,key,value):
-        self.vals[key.name] = value
+        val = key.indexes(self)
+        if isinstance(value,list):
+            dimVar = key.indexes.indexType.dims[0].name # Shudder
+            self.vals[dimVar] = len(value)
+        _,ind = key.indexes(self)
+        if ind == None:
+            self.vals[key.name] = value
+            return
+        self.vals[key.name][ind] = value
     def __str__(self):
         return str(self.vals)
 
@@ -30,8 +38,19 @@ class Function:
         mem = copy.copy(mem)
         for elem,val in zip(self.inputs.varList,args):
             mem[elem] = val
+        for var in self.outputs.varList:
+            dims = var.indexes.indexType.dims
+            if dims == []:
+                continue
+            sizes = list(map(mem.__getitem__,dims))
+            arr = self.buildArr(sizes)
+            mem[var] = arr
         mem, val = self.body(mem)
         return mem,list(map(mem.__getitem__,self.outputs.varList))
+    def buildArr(self,arr):
+        if len(arr)==0:
+            return 0
+        return [self.buildArr(arr[1:]) for i in range(arr[0])]
 
 class VarStatement:
     def __init__(self,varList):
@@ -40,7 +59,7 @@ class VarStatement:
     def __str__(self):
         return 'VarStatement('+','.join(map(str,self.varList))+')'
     def __call__(self,mem):
-        raise ExecutionError("Variable Called")
+        raise ExecutionError("Variable Statement Called")
 
 class Var:
     def __init__(self,name,indexes):
@@ -84,7 +103,9 @@ class Indexing:
     def __str__(self):
         return "Indexing("+','.join(map(str,[self.loc,self.indexType]))+")"
     def __call__(self,mem):
-        raise ExecutionError("Index Called")
+        if self.loc==None:
+            return mem, None
+        return self.loc(mem)
 
 class PlanType:
     def __init__(self,dims,name):
@@ -124,11 +145,13 @@ class ForLoop:
     def __str__(self):
         return "ForLoop("+','.join(map(str,[self.mainVar,self.indVar]))+")"
     def __call__(self,mem,statement):
-        arr = mem[self.mainVar]
+        if isinstance(self.mainVar,Var):
+            arr = mem[self.mainVar]
+        else:
+            mem, arr = self.mainVar(mem)
         if isinstance(arr,int):
             arr = range(arr)
         for i in arr:
-            print(mem)
             mem[self.indVar] = i
             mem,val = statement(mem)
         return mem, val
@@ -174,14 +197,14 @@ class Compare:
         self.arith2 = arith2
     def __str__(self):
         return "Compare("+','.join(map(str,[self.op,self.arith1,self.arith2]))+")"
-    def __call__(mem,self):
+    def __call__(self,mem):
         mem, val1 = self.arith1(mem)
         mem, val2 = self.arith2(mem)
-        if op == '<':
+        if self.op == '<':
             return mem, val1 < val2
-        if op == '>':
+        if self.op == '>':
             return mem, val1 > val2
-        if op == '=':
+        if self.op == '=':
             return mem, val1 == val2
 
 class Arith:

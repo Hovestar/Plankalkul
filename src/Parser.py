@@ -135,7 +135,7 @@ def parseIndexVar(s):
     while len(string)>i and string[i].islower():
         i+=1
     if(i>0 and string[:i] not in "ibfc"):
-        return string[:i],string[i:]
+        return pClass.Var(string[:i],pClass.Indexing(None,pClass.PlanType([],'i'))),string[i:]
     raise ParseError("Expected at least one digit")
 def parseIf(s):
     """
