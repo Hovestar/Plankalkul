@@ -30,6 +30,7 @@ def loadFile(name):
             print("Good: {} == {}".format(testVal,valOut))
 
 if __name__== "__main__":
+    directory = "../Tests/"
     files = ['03']
     for fname in files:
-        loadFile("../Tests/"+fname)
+        loadFile(directory+fname)
