@@ -16,4 +16,7 @@ or a loop, `W1(expr) => var` or `W`, just `W` is a while loop that terminates if
 So this code, mostly the execution part, is fairly hacked together. It's written in python. The parser is a pretty standard recursive decent parser. Execution follows the object oriented model where each object parsed can be called on some memory and it returns a memory and a value. This was poorly planned so it is not nearly as clean as the parser.
 
 ## Analysis of language
-The original form of the language (which can be seen in 01/2.planOld) is 2D and really ungainly. A recursive decent parser could be easily adapted for this, but array accessing is rather ugly and hard to do in ascii so I flattened the language. Because of how I implemented it, it is similar to c, but memory is totally abstracted away. It is fundamentally a memory changing language. The biggest noticeable absence is named functions and recursion. Overall it's an interesting language, but there are not many new concepts to be gleaned. 
+The original form of the language (which can be seen in 01/2.planOld) is 2D and really ungainly. A recursive decent parser could be easily adapted for this, but array accessing is rather ugly and hard to do in ascii so I flattened the language. Because of how I implemented it, it is similar to c, but memory is totally abstracted away. It is fundamentally a memory changing language. The biggest noticeable absence is named functions and recursion. Overall it's an interesting language, but there are not many new concepts to be gleaned.
+
+## Writing a program
+`runPlan.py sourceFile "[inputs, seperated, by, commas]"`

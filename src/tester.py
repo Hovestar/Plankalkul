@@ -31,6 +31,6 @@ def loadFile(name):
 
 if __name__== "__main__":
     directory = "../Tests/"
-    files = ['03']
+    files = ['01','02']
     for fname in files:
         loadFile(directory+fname)
