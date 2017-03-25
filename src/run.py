@@ -5,7 +5,7 @@ import ParserClasses
 
 def main(argv):
     if(len(argv) != 3):
-        print()
+        print("Usage: `runPlan.py sourceFile \"[inputs, seperated, by, commas]\"`")
         return
     fname = argv[1]
     inputs = argv[2]
